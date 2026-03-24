@@ -2,178 +2,909 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calculator with History Button</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Surface Laptops — Enquiry</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet"/>
   <style>
-    .calculator {
-      max-width: 320px;
-      margin: 20px auto 10px;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0c10;
+      --card: #111318;
+      --surface: #181c24;
+      --border: #ffffff12;
+      --accent: #0078d4;
+      --accent2: #50e3c2;
+      --text: #e8eaf0;
+      --muted: #7a8099;
+      --error: #ff5c5c;
+      --success: #50e3c2;
+      --radius: 16px;
     }
-    .display {
-      font-size: 24px;
-      height: 50px;
-      text-align: right;
-      padding: 10px;
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── BG GLOW ── */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 600px;
+      background: radial-gradient(ellipse at center, #0078d422 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      z-index: 10;
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+    }
+
+    .logo-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .logo-text span { color: var(--accent); }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 28px;
+      transition: color .2s;
+    }
+    nav a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      z-index: 5;
+      text-align: center;
+      padding: 90px 24px 60px;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: #0078d415;
+      border: 1px solid #0078d440;
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+      animation: fadeUp .6s ease both;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 680px;
+      margin: 0 auto 20px;
+      animation: fadeUp .6s .1s ease both;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.7;
+      animation: fadeUp .6s .2s ease both;
+    }
+
+    /* ── MODELS GRID ── */
+    .models-section {
+      position: relative;
+      z-index: 5;
+      max-width: 1100px;
+      margin: 0 auto 64px;
+      padding: 0 24px;
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .models-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .model-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      cursor: pointer;
+      transition: border-color .25s, transform .25s, box-shadow .25s;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp .5s ease both;
+    }
+
+    .model-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0078d408, transparent);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .model-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px #0078d420; border-color: #0078d440; }
+    .model-card:hover::before { opacity: 1; }
+    .model-card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px #0078d430; }
+    .model-card.selected::before { opacity: 1; }
+
+    .model-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 14px;
+    }
+    .badge-new { background: #50e3c220; color: var(--accent2); border: 1px solid #50e3c240; }
+    .badge-popular { background: #0078d420; color: var(--accent); border: 1px solid #0078d440; }
+    .badge-pro { background: #8b5cf620; color: #a78bfa; border: 1px solid #8b5cf640; }
+    .badge-go { background: #f59e0b20; color: #fbbf24; border: 1px solid #f59e0b40; }
+
+    .model-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+    .model-card .model-sub { font-size: 0.82rem; color: var(--muted); margin-bottom: 12px; }
+
+    .model-price {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .model-price span { font-size: 0.78rem; font-weight: 400; color: var(--muted); }
+
+    .model-check {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .model-card.selected .model-check { opacity: 1; }
+
+    /* ── FORM ── */
+    .form-section {
+      position: relative;
+      z-index: 5;
+      max-width: 760px;
+      margin: 0 auto 80px;
+      padding: 0 24px;
+    }
+
+    .form-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    .form-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .form-subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 36px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .form-row.full { grid-template-columns: 1fr; }
+
+    .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    .field label { font-size: 0.83rem; font-weight: 500; color: var(--muted); letter-spacing: 0.02em; }
+    .field label .req { color: var(--accent); margin-left: 2px; }
+
+    .field input,
+    .field select,
+    .field textarea {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.95rem;
+      padding: 13px 16px;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      width: 100%;
+      -webkit-appearance: none;
+    }
+
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%237a8099' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+      cursor: pointer;
+    }
+
+    .field select option { background: #1a1e28; }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px #0078d422;
+    }
+
+    .field input.err,
+    .field select.err,
+    .field textarea.err { border-color: var(--error); }
+
+    .field .err-msg { font-size: 0.78rem; color: var(--error); display: none; }
+    .field .err-msg.show { display: block; }
+
+    .field textarea { resize: vertical; min-height: 110px; }
+
+    /* specs row */
+    .specs-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+    /* checkbox group */
+    .check-group { display: flex; flex-direction: column; gap: 10px; }
+    .check-item { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .check-item input[type="checkbox"] { display: none; }
+    .check-box {
+      width: 20px; height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .2s, background .2s;
+      flex-shrink: 0;
+    }
+    .check-item:hover .check-box { border-color: var(--accent); }
+    .check-item input:checked ~ .check-box { background: var(--accent); border-color: var(--accent); }
+    .check-item input:checked ~ .check-box svg { display: block; }
+    .check-box svg { display: none; }
+    .check-label { font-size: 0.9rem; color: var(--text); }
+
+    /* range */
+    .budget-display {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 10px;
-      border-radius: 6px;
-      background-color: #f8f9fa;
-      user-select: none;
     }
-    #historyContainer {
-      max-width: 320px;
-      margin: 10px auto 30px;
-      background: #f1f3f5;
-      border-radius: 6px;
-      padding: 10px;
-      height: 140px;
-      overflow-y: auto;
-      font-family: monospace;
-      white-space: pre-wrap;
+    .budget-display .budget-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--surface);
+      border-radius: 2px;
+      outline: none;
+      border: none;
+      padding: 0;
+      position: relative;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 0 4px #0078d420;
+      transition: box-shadow .2s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { box-shadow: 0 0 0 8px #0078d430; }
+
+    /* divider */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 32px 0;
+    }
+
+    /* submit */
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent), #005fa3);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: opacity .2s, transform .2s, box-shadow .2s;
+      position: relative;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    .btn-submit:hover { opacity: .92; transform: translateY(-2px); box-shadow: 0 12px 36px #0078d440; }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit .spinner {
       display: none;
+      width: 20px; height: 20px;
+      border: 2px solid #ffffff50;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto;
+    }
+    .btn-submit.loading .btn-text { display: none; }
+    .btn-submit.loading .spinner { display: block; }
+
+    /* ── SUCCESS ── */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #0a0c10ee;
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      animation: fadeIn .3s ease;
+    }
+    .success-overlay.show { display: flex; }
+    .success-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 56px 48px;
+      text-align: center;
+      max-width: 440px;
+      width: 90%;
+      animation: popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .success-icon {
+      width: 72px; height: 72px;
+      background: #50e3c215;
+      border: 2px solid var(--accent2);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .success-box h2 { font-size: 1.6rem; margin-bottom: 10px; }
+    .success-box p { color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+    .btn-close {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 12px 28px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .btn-close:hover { border-color: var(--accent); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.82rem;
+      position: relative;
+      z-index: 5;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 680px) {
+      header { padding: 20px 20px; }
+      nav { display: none; }
+      .form-card { padding: 32px 22px; }
+      .form-row { grid-template-columns: 1fr; }
+      .specs-row { grid-template-columns: 1fr 1fr; }
+      footer { flex-direction: column; gap: 10px; text-align: center; }
+    }
+
+    @media (max-width: 400px) {
+      .specs-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-  <div class="calculator bg-light">
-    <div id="display" class="display">0</div>
-    <div class="d-grid gap-2">
-      <div class="btn-group" role="group">
-        <button class="btn btn-secondary" onclick="clearDisplay()">C</button>
-        <button class="btn btn-secondary" onclick="deleteLast()">←</button>
-        <button class="btn btn-secondary" onclick="appendMinus()">±</button>
-        <button class="btn btn-secondary" onclick="appendOperator('/')">÷</button>
-      </div>
-      <div class="btn-group" role="group">
-        <button class="btn btn-light" onclick="appendNumber('7')">7</button>
-        <button class="btn btn-light" onclick="appendNumber('8')">8</button>
-        <button class="btn btn-light" onclick="appendNumber('9')">9</button>
-        <button class="btn btn-secondary" onclick="appendOperator('*')">×</button>
-      </div>
-      <div class="btn-group" role="group">
-        <button class="btn btn-light" onclick="appendNumber('4')">4</button>
-        <button class="btn btn-light" onclick="appendNumber('5')">5</button>
-        <button class="btn btn-light" onclick="appendNumber('6')">6</button>
-        <button class="btn btn-secondary" onclick="appendOperator('-')">−</button>
-      </div>
-      <div class="btn-group" role="group">
-        <button class="btn btn-light" onclick="appendNumber('1')">1</button>
-        <button class="btn btn-light" onclick="appendNumber('2')">2</button>
-        <button class="btn btn-light" onclick="appendNumber('3')">3</button>
-        <button class="btn btn-secondary" onclick="appendOperator('+')">+</button>
-      </div>
-      <div class="btn-group" role="group">
-        <button class="btn btn-light" onclick="appendNumber('0')">0</button>
-        <button class="btn btn-light" onclick="appendDecimal()">.</button>
-        <button class="btn btn-primary" onclick="calculateResult()">=</button>
-      </div>
-    </div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="38" height="38" rx="10" fill="#0078d4" fill-opacity=".15"/>
+      <path d="M10 19L19 10L28 19L19 28L10 19Z" fill="#0078d4" fill-opacity=".3" stroke="#0078d4" stroke-width="1.5"/>
+      <rect x="14" y="14" width="10" height="10" rx="2" fill="#0078d4"/>
+    </svg>
+    <span class="logo-text">Microsoft <span>Surface</span></span>
   </div>
+  <nav>
+    <a href="#">Products</a>
+    <a href="#">Compare</a>
+    <a href="#">Support</a>
+    <a href="#">Contact</a>
+  </nav>
+</header>
 
-  <button id="toggleHistoryBtn" class="btn btn-outline-primary d-block mx-auto mb-3" onclick="toggleHistory()">Show History</button>
-  <div id="historyContainer"></div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Official Enquiry Portal</div>
+  <h1>Find Your Perfect<br/><em>Surface Laptop</em></h1>
+  <p>Tell us what you need — our team will personalise a recommendation and get back to you within 24 hours.</p>
+</section>
 
-  <script>
-    let expression = '';
-    let history = [];
+<!-- MODEL SELECTION -->
+<section class="models-section">
+  <p class="section-label">Step 1 — Choose a model</p>
+  <div class="models-grid" id="modelsGrid">
 
-    function updateDisplay() {
-      const display = document.getElementById('display');
-      display.textContent = expression || '0';
-    }
+    <div class="model-card" data-model="Surface Laptop 7">
+      <div class="model-check">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="model-badge badge-new">New</span>
+      <h3>Surface Laptop 7</h3>
+      <p class="model-sub">15" · Snapdragon X Elite</p>
+      <div class="model-price">From ₹1,49,999 <span>/ unit</span></div>
+    </div>
 
-    function appendNumber(num) {
-      expression += num;
-      updateDisplay();
-    }
+    <div class="model-card" data-model="Surface Laptop 6">
+      <div class="model-check">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="model-badge badge-popular">Popular</span>
+      <h3>Surface Laptop 6</h3>
+      <p class="model-sub">13.5" · Intel Core Ultra</p>
+      <div class="model-price">From ₹1,09,999 <span>/ unit</span></div>
+    </div>
 
-    function appendOperator(op) {
-      if (!expression) return;
-      const lastChar = expression.slice(-1);
-      if ('+-/*'.includes(lastChar)) {
-        expression = expression.slice(0, -1) + op;
-      } else {
-        expression += op;
-      }
-      updateDisplay();
-    }
+    <div class="model-card" data-model="Surface Laptop Studio 2">
+      <div class="model-check">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="model-badge badge-pro">Pro</span>
+      <h3>Laptop Studio 2</h3>
+      <p class="model-sub">14.4" · NVIDIA RTX 4060</p>
+      <div class="model-price">From ₹2,29,999 <span>/ unit</span></div>
+    </div>
 
-    function appendDecimal() {
-      const lastOperatorIndex = Math.max(expression.lastIndexOf('+'), expression.lastIndexOf('-'), expression.lastIndexOf('*'), expression.lastIndexOf('/'));
-      const lastNumber = expression.slice(lastOperatorIndex + 1);
-      if (!lastNumber.includes('.')) {
-        if (!lastNumber) {
-          expression += '0.';
-        } else {
-          expression += '.';
-        }
-        updateDisplay();
-      }
-    }
+    <div class="model-card" data-model="Surface Laptop Go 3">
+      <div class="model-check">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="model-badge badge-go">Compact</span>
+      <h3>Surface Laptop Go 3</h3>
+      <p class="model-sub">12.4" · Intel Core i5</p>
+      <div class="model-price">From ₹64,999 <span>/ unit</span></div>
+    </div>
 
-    function clearDisplay() {
-      expression = '';
-      updateDisplay();
-    }
+    <div class="model-card" data-model="Not Sure">
+      <div class="model-check">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="model-badge badge-popular" style="background:#ffffff10;color:var(--muted);border-color:#ffffff20;">Any / Unsure</span>
+      <h3>Help Me Choose</h3>
+      <p class="model-sub">All models considered</p>
+      <div class="model-price" style="color:var(--muted);font-size:.9rem;font-weight:500;">Let us recommend</div>
+    </div>
 
-    function deleteLast() {
-      expression = expression.slice(0, -1);
-      updateDisplay();
-    }
+  </div>
+</section>
 
-    function appendMinus() {
-      if (!expression) {
-        expression = '-';
-        updateDisplay();
-        return;
-      }
-      const lastOperatorIndex = Math.max(expression.lastIndexOf('+'), expression.lastIndexOf('-'), expression.lastIndexOf('*'), expression.lastIndexOf('/'));
-      let lastNumber = expression.slice(lastOperatorIndex + 1);
-      if (lastNumber.startsWith('-')) {
-        expression = expression.slice(0, lastOperatorIndex + 1) + lastNumber.slice(1);
-      } else {
-        expression = expression.slice(0, lastOperatorIndex + 1) + '-' + lastNumber;
-      }
-      updateDisplay();
-    }
+<!-- ENQUIRY FORM -->
+<section class="form-section">
+  <p class="section-label" style="margin-bottom:20px;">Step 2 — Your details</p>
+  <div class="form-card">
+    <h2 class="form-title">Enquiry Form</h2>
+    <p class="form-subtitle">Fields marked <span style="color:var(--accent)">*</span> are required.</p>
 
-    function calculateResult() {
-      try {
-        const safeEval = new Function('return ' + expression);
-        const result = safeEval();
-        history.push(expression + ' = ' + result);
-        updateHistory();
-        expression = String(result);
-        updateDisplay();
-      } catch {
-        alert('Invalid Expression');
-        expression = '';
-        updateDisplay();
-      }
-    }
+    <form id="enquiryForm" novalidate>
 
-    function updateHistory() {
-      const historyEl = document.getElementById('historyContainer');
-      historyEl.textContent = history.slice(-10).join('\n') || 'No history yet';
-    }
+      <!-- Name row -->
+      <div class="form-row">
+        <div class="field">
+          <label>First Name <span class="req">*</span></label>
+          <input type="text" id="firstName" placeholder="Arjun" />
+          <span class="err-msg" id="firstNameErr">Please enter your first name.</span>
+        </div>
+        <div class="field">
+          <label>Last Name <span class="req">*</span></label>
+          <input type="text" id="lastName" placeholder="Sharma" />
+          <span class="err-msg" id="lastNameErr">Please enter your last name.</span>
+        </div>
+      </div>
 
-    function toggleHistory() {
-      const historyContainer = document.getElementById('historyContainer');
-      const btn = document.getElementById('toggleHistoryBtn');
-      if (historyContainer.style.display === 'none') {
-        historyContainer.style.display = 'block';
-        btn.textContent = 'Hide History';
-      } else {
-        historyContainer.style.display = 'none';
-        btn.textContent = 'Show History';
-      }
-    }
+      <!-- Contact row -->
+      <div class="form-row">
+        <div class="field">
+          <label>Email Address <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="arjun@company.com" />
+          <span class="err-msg" id="emailErr">Enter a valid email address.</span>
+        </div>
+        <div class="field">
+          <label>Phone Number <span class="req">*</span></label>
+          <input type="tel" id="phone" placeholder="+91 98765 43210" />
+          <span class="err-msg" id="phoneErr">Enter a valid phone number.</span>
+        </div>
+      </div>
 
-    updateDisplay();
-    updateHistory();
-  </script>
+      <!-- Company -->
+      <div class="form-row">
+        <div class="field">
+          <label>Company / Organisation</label>
+          <input type="text" id="company" placeholder="Acme Technologies Pvt. Ltd." />
+        </div>
+        <div class="field">
+          <label>Purchase Type <span class="req">*</span></label>
+          <select id="purchaseType">
+            <option value="">Select…</option>
+            <option>Personal Use</option>
+            <option>Business / Enterprise</option>
+            <option>Education</option>
+            <option>Government</option>
+            <option>Reseller / Distributor</option>
+          </select>
+          <span class="err-msg" id="purchaseTypeErr">Please select a purchase type.</span>
+        </div>
+      </div>
+
+      <!-- Model hidden display -->
+      <div class="field">
+        <label>Model of Interest</label>
+        <input type="text" id="modelDisplay" placeholder="Select a model above…" readonly
+          style="background:var(--bg);cursor:not-allowed;opacity:.7;" />
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Specs preference -->
+      <p style="font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:16px;">Preferred Specifications</p>
+      <div class="specs-row">
+        <div class="field">
+          <label>RAM</label>
+          <select id="ram">
+            <option value="">Any</option>
+            <option>8 GB</option>
+            <option>16 GB</option>
+            <option>32 GB</option>
+            <option>64 GB</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Storage</label>
+          <select id="storage">
+            <option value="">Any</option>
+            <option>256 GB SSD</option>
+            <option>512 GB SSD</option>
+            <option>1 TB SSD</option>
+            <option>2 TB SSD</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Colour</label>
+          <select id="colour">
+            <option value="">Any</option>
+            <option>Platinum</option>
+            <option>Matte Black</option>
+            <option>Sandstone</option>
+            <option>Sapphire</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quantity -->
+      <div class="form-row">
+        <div class="field">
+          <label>Quantity Needed <span class="req">*</span></label>
+          <select id="quantity">
+            <option value="">Select…</option>
+            <option>1</option>
+            <option>2–5</option>
+            <option>6–20</option>
+            <option>21–50</option>
+            <option>50+</option>
+          </select>
+          <span class="err-msg" id="quantityErr">Please select a quantity.</span>
+        </div>
+        <div class="field">
+          <label>Timeline</label>
+          <select id="timeline">
+            <option value="">Select…</option>
+            <option>ASAP</option>
+            <option>Within 1 month</option>
+            <option>1–3 months</option>
+            <option>3–6 months</option>
+            <option>Just browsing</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Budget -->
+      <div class="field">
+        <div class="budget-display">
+          <label style="margin-bottom:0;">Budget (per unit)</label>
+          <span class="budget-val" id="budgetVal">₹1,50,000</span>
+        </div>
+        <input type="range" id="budget" min="50000" max="300000" step="5000" value="150000"
+          oninput="updateBudget(this.value)" />
+        <div style="display:flex;justify-content:space-between;margin-top:6px;">
+          <span style="font-size:.75rem;color:var(--muted);">₹50K</span>
+          <span style="font-size:.75rem;color:var(--muted);">₹3,00,000+</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Add-ons -->
+      <p style="font-size:.85rem;font-weight:600;color:var(--text);margin-bottom:16px;">Additional Interests</p>
+      <div class="check-group" style="margin-bottom:24px;">
+        <label class="check-item">
+          <input type="checkbox" name="addon" value="Surface Pen">
+          <span class="check-box">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="check-label">Surface Pen &amp; Accessories</span>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" name="addon" value="Microsoft 365">
+          <span class="check-box">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="check-label">Microsoft 365 Subscription</span>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" name="addon" value="Extended Warranty">
+          <span class="check-box">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="check-label">Extended Warranty / Care+</span>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" name="addon" value="Trade-in">
+          <span class="check-box">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="check-label">Trade-in / Device Exchange</span>
+        </label>
+        <label class="check-item">
+          <input type="checkbox" name="addon" value="Finance Options">
+          <span class="check-box">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="check-label">EMI / Finance Options</span>
+        </label>
+      </div>
+
+      <!-- Message -->
+      <div class="field">
+        <label>Your Message / Requirements</label>
+        <textarea id="message" placeholder="Share anything specific — use case, deployment details, integration needs…"></textarea>
+      </div>
+
+      <!-- How did you hear -->
+      <div class="field" style="margin-bottom:32px;">
+        <label>How did you hear about us?</label>
+        <select id="source">
+          <option value="">Select…</option>
+          <option>Microsoft Website</option>
+          <option>Search Engine</option>
+          <option>Social Media</option>
+          <option>Word of Mouth</option>
+          <option>Microsoft Store</option>
+          <option>Partner / Reseller</option>
+          <option>Advertisement</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span class="btn-text">Submit Enquiry →</span>
+        <span class="spinner"></span>
+      </button>
+
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2025 Microsoft Corporation. All rights reserved.</span>
+  <span>Privacy Policy · Terms of Use · Cookie Settings</span>
+</footer>
+
+<!-- SUCCESS MODAL -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 16L13 23L26 9" stroke="#50e3c2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2>Enquiry Received!</h2>
+    <p>Thank you for reaching out. A Microsoft Surface specialist will contact you within <strong>24 business hours</strong> with a personalised recommendation.</p>
+    <button class="btn-close" onclick="closeSuccess()">Back to Home</button>
+  </div>
+</div>
+
+<script>
+  // Model selection
+  const cards = document.querySelectorAll('.model-card');
+  const modelDisplay = document.getElementById('modelDisplay');
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      cards.forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      modelDisplay.value = card.dataset.model;
+    });
+  });
+
+  // Budget slider
+  function updateBudget(val) {
+    const n = parseInt(val);
+    document.getElementById('budgetVal').textContent =
+      '₹' + n.toLocaleString('en-IN') + (n >= 300000 ? '+' : '');
+    // live gradient
+    const pct = ((n - 50000) / (300000 - 50000)) * 100;
+    document.getElementById('budget').style.background =
+      `linear-gradient(90deg, #0078d4 ${pct}%, #181c24 ${pct}%)`;
+  }
+  updateBudget(150000);
+
+  // Validation helpers
+  function setErr(id, errId, show) {
+    const el = document.getElementById(id);
+    const err = document.getElementById(errId);
+    if (show) { el.classList.add('err'); err.classList.add('show'); }
+    else       { el.classList.remove('err'); err.classList.remove('show'); }
+    return !show;
+  }
+
+  function validate() {
+    let ok = true;
+    const fn = document.getElementById('firstName').value.trim();
+    ok = setErr('firstName','firstNameErr', fn === '') && ok;
+    const ln = document.getElementById('lastName').value.trim();
+    ok = setErr('lastName','lastNameErr', ln === '') && ok;
+    const em = document.getElementById('email').value.trim();
+    ok = setErr('email','emailErr', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) && ok;
+    const ph = document.getElementById('phone').value.trim();
+    ok = setErr('phone','phoneErr', ph.replace(/\D/g,'').length < 7) && ok;
+    const pt = document.getElementById('purchaseType').value;
+    ok = setErr('purchaseType','purchaseTypeErr', pt === '') && ok;
+    const qt = document.getElementById('quantity').value;
+    ok = setErr('quantity','quantityErr', qt === '') && ok;
+    return ok;
+  }
+
+  // Clear errors on input
+  ['firstName','lastName','email','phone','purchaseType','quantity'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => {
+      document.getElementById(id).classList.remove('err');
+      const errEl = document.getElementById(id + 'Err');
+      if (errEl) errEl.classList.remove('show');
+    });
+  });
+
+  // Submit
+  document.getElementById('enquiryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!validate()) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.classList.add('loading');
+    btn.disabled = true;
+
+    // Simulate API call
+    setTimeout(() => {
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      document.getElementById('successOverlay').classList.add('show');
+      this.reset();
+      cards.forEach(c => c.classList.remove('selected'));
+      modelDisplay.value = '';
+      updateBudget(150000);
+      document.getElementById('budget').value = 150000;
+    }, 2000);
+  });
+
+  function closeSuccess() {
+    document.getElementById('successOverlay').classList.remove('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Animate model cards on load
+  document.querySelectorAll('.model-card').forEach((c, i) => {
+    c.style.animationDelay = `${i * 0.08 + 0.3}s`;
+  });
+</script>
 </body>
 </html>
